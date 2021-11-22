@@ -1,39 +1,101 @@
 import React from 'react';
-//import $ from 'jquery';
+import $ from 'jquery';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Table, Input, FormGroup, Card, CardBody, CardHeader, Button, Label } from 'reactstrap';
+import { Table, Input, FormGroup, Button } from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCircle, faDownload} from '@fortawesome/free-solid-svg-icons';
 
 function Doc(props){
 
-    //will need to incorporate react router to better handle state later
-    const state =({
-        numOfChecks : 0
-    })
-          
-  class DocRow extends React.Component {
-
-    constructor(props) {
+  class DocTable extends React.Component {
+    constructor(props){
         super(props);
+        this.state = {
+            isSelectAll: true,
+            numOfChecks: 0
+        };
+        this.toggleSelectAll = this.toggleSelectAll.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.selectAllBoxes = this.selectAllBoxes.bind(this);
         this.selectBox = this.selectBox.bind(this);
-       
     }
 
-//selecting a checkbox
+    handleSubmit(){
+        if (this.state.numOfChecks > 1)
+        alert(this.state.numOfChecks + ' Documents Downloaded');
+        else if (this.state.numOfChecks === 1)
+        alert(this.state.numOfChecks + ' Document Downloaded');
+        else
+        alert('No Documents Selected');
+      }
+
+          //selecting a checkbox
     selectBox(event){
+        var numCount = this.state.numOfChecks;
+
         if(event.target.checked){
-        //numOfChecks++;
-        state.numOfChecks++;       
+            numCount++;
+
+            this.setState({numOfChecks : numCount});
+
+        //numOfChecks++;       
         }
         else{
+            numCount--;
+            this.setState({numOfChecks : numCount});
         //numOfChecks--;
-        state.numOfChecks--;
         }
     };
 
-    render() {
-      const doc = this.props.doc;
+    toggleSelectAll(){
+
+        this.setState({
+            isSelectAll: !(this.state.isSelectAll)
+        });
+
+        this.selectAllBoxes();
+    }  
+
+    selectAllBoxes(){
+        var numCount = this.state.numOfChecks;
+        alert(numCount);
+
+        var thisState = this;
+
+        if(this.state.isSelectAll){
+            //go through each docCheck checkbox via name
+            $.each($('[name="docCheck"'), function (n, ele){
+                //check unique checkbox id to make sure the checkbox is enabled and not already selected
+                if($('#docCheck' + n).prop("disabled") === false && !$('#docCheck' + n).prop("checked")){
+                    $('#docCheck' + n).prop("checked", true);
+                  
+                    numCount++;
+                    thisState.setState({numOfChecks : numCount});
+            
+
+                }
+            })
+                
+        }
+        else{
+            $.each($('[name="docCheck"'), function (n, ele){
+                //check opposite conditions
+                if($('#docCheck' + n).prop("disabled") === false && $('#docCheck' + n).prop("checked")){
+                    $('#docCheck' + n).prop("checked", false);
+                    
+                    numCount--;
+                    thisState.setState({numOfChecks : numCount});
+                            
+                    
+                }
+            })
+        }
+        
+    } 
+
+
+    docRow(doc, key, rowCount){
+
       var status = "";
       var disableCheck = true;
 
@@ -45,11 +107,13 @@ function Doc(props){
           status = doc.status;
           disableCheck = true;
       }
+      var uniqueId = "docCheck" + rowCount;
+
 
       return (
         <tr>
             <th scope="row">
-                <input type="checkbox" name="docCheck" disabled={disableCheck} onChange={this.selectBox}></input>
+                <input type="checkbox" id={uniqueId} name="docCheck" disabled={disableCheck} onChange={this.selectBox}></input>
             </th>    
             <td>{doc.name}</td>
             <td>{doc.device}</td>
@@ -59,22 +123,34 @@ function Doc(props){
         
       );
     }
-  }
-  
-  class DocTable extends React.Component {
+
+       
     render() {
       const rows = [];
-      
+      var rowCount = 0;
+
       this.props.docs.forEach((doc) => {
         rows.push(
-          <DocRow
-            doc={doc}
-            key={doc.name} />
+          this.docRow(doc,doc.name,rowCount)
         );
+        rowCount++;
 
       });
-  
+      
       return (
+        <div className="col-12"> 
+            <div className="row">
+                <div className="col-12 col-md-5">
+                    <FormGroup check>
+                        <Input type="checkbox" id="selectAll" onChange={this.toggleSelectAll} />
+             
+                        <span id="totalSelected">Selected {this.state.numOfChecks}</span>
+                    </FormGroup>
+                </div>
+                <div className="col-12 col-md-5">    
+                    <Button onClick={this.handleSubmit}><FontAwesomeIcon icon={faDownload}/> Download Selected</Button>
+                </div>
+            </div>
         <Table hover reponsive>
           <thead>
             <tr>
@@ -87,34 +163,7 @@ function Doc(props){
           </thead>
           <tbody>{rows}</tbody>
         </Table>
-      );
-    }
-  }
-  
-  class TopBar extends React.Component {
-    handleSubmit(){
-        alert('Documents Downloaded');
-      }
-
-    selectAllBoxes(){
-
-    } 
-    render() {
-        
-      return (
-
-        <div className="row">
-           <div className="col-12 col-md-5">
-                <FormGroup check>
-                <Input type="checkbox" id="selectAll" onSelect={this.selectAllBoxes} />
-                
-                <span id="totalSelected">Selected {state.numOfChecks}</span></FormGroup>
-            </div>
-            <div className="col-12 col-md-5">    
-                <Button onClick={this.handleSubmit}><FontAwesomeIcon icon={faDownload}/> Download Selected</Button>
-          </div>
         </div>
-
       );
     }
   }
@@ -123,11 +172,7 @@ function Doc(props){
     render() {
       return (
         <div className="container">
- 
-                <div className="row-content">
-                    <div className="col-12"> 
-                        <TopBar />   
-                    </div>      
+                <div className="row-content">   
                     <div className="col-12">                
                         <div className="row"><DocTable docs={this.props.docs} /></div> 
                     </div> 
