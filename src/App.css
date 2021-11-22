@@ -18,6 +18,11 @@ body{
   font-family: 'Roboto', sans-serif;
 }
 
+.eventRow {
+  justify-content: space-evenly;
+  font-weight: bold;
+}
+
 /*-----------Table--------------------*/
 .theader {
   background-color:rgba(231, 41, 16, 0.548)

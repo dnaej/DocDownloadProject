@@ -20,6 +20,7 @@ function Doc(props){
         this.selectBox = this.selectBox.bind(this);
     }
 
+    //Download Button stuff
     handleSubmit(){
         if (this.state.numOfChecks > 1)
         alert(this.state.numOfChecks + ' Documents Downloaded');
@@ -29,24 +30,22 @@ function Doc(props){
         alert('No Documents Selected');
       }
 
-          //selecting a checkbox
+    //selecting an individual checkbox
     selectBox(event){
         var numCount = this.state.numOfChecks;
 
         if(event.target.checked){
             numCount++;
 
-            this.setState({numOfChecks : numCount});
-
-        //numOfChecks++;       
+            this.setState({numOfChecks : numCount});      
         }
         else{
             numCount--;
             this.setState({numOfChecks : numCount});
-        //numOfChecks--;
         }
     };
 
+    //Select All change event
     toggleSelectAll(){
 
         this.setState({
@@ -56,9 +55,9 @@ function Doc(props){
         this.selectAllBoxes();
     }  
 
+    //part 2
     selectAllBoxes(){
         var numCount = this.state.numOfChecks;
-        alert(numCount);
 
         var thisState = this;
 
@@ -95,7 +94,6 @@ function Doc(props){
 
 
     //Getting all of the rows of the DOC array
-
     docRow(doc, key, rowCount){
 
       var status = "";
@@ -126,10 +124,10 @@ function Doc(props){
       );
     }
 
-       
+     
     render() {
       const rows = [];
-      var rowCount = 0;
+      var rowCount = 0; //passes into docRow function for unique ids
 
       this.props.docs.forEach((doc) => {
         rows.push(
@@ -141,15 +139,17 @@ function Doc(props){
       
       return (
         <div className="col-12"> 
-            <div className="row">
-                <div className="col-12 col-md-5">
+            <div className="row eventRow">
+                <div className="col-12 col-md-4">
                     <FormGroup check>
                         <Input type="checkbox" id="selectAll" onChange={this.toggleSelectAll} />
-             
-                        <span id="totalSelected">Selected {this.state.numOfChecks}</span>
+                        <label for="selectAll">Select All</label>
                     </FormGroup>
                 </div>
-                <div className="col-12 col-md-5">    
+                <div className="col-12 col-md-4">
+                    <span id="totalSelected">Selected {this.state.numOfChecks}</span>
+                </div>
+                <div className="col-12 col-md-4">    
                     <Button onClick={this.handleSubmit} className="dbtn"><FontAwesomeIcon icon={faDownload}/> Download Selected</Button>
                 </div>
             </div>
@@ -174,11 +174,9 @@ function Doc(props){
     render() {
       return (
         <div className="container">
-                <div className="row-content">   
-                    <div className="col-12">                
-                        <div className="row"><DocTable docs={this.props.docs} /></div> 
-                    </div> 
-            </div>
+                <div className="row-content">                                   
+                    <DocTable docs={this.props.docs} />   
+                </div>
 
         </div>
         
@@ -186,7 +184,7 @@ function Doc(props){
     }
   }
   
-  
+  //array of doc objs to be worked with
   const DOCS = [
         {name: 'smss.exe', device: 'Stark', path: '\\Device\\HarddiskVolume2\\Windows\\System32\\smss.exe', status: 'scheduled'},
         {name: 'netsh.exe', device: 'Targaryen', path: '\\Device\\HarddiskVolume2\\Windows\\System32\\netsh.exe', status: 'available'},
