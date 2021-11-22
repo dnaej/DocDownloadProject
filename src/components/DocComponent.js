@@ -1,4 +1,5 @@
 import React from 'react';
+//import $ from 'jquery';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Table, Input, FormGroup, Card, CardBody, CardHeader, Button, Label } from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -6,15 +7,49 @@ import {faCircle, faDownload} from '@fortawesome/free-solid-svg-icons';
 
 function Doc(props){
 
+    //will need to incorporate react router to better handle state later
+    const state =({
+        numOfChecks : 0
+    })
+          
   class DocRow extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.selectBox = this.selectBox.bind(this);
+       
+    }
+
+//selecting a checkbox
+    selectBox(event){
+        if(event.target.checked){
+        //numOfChecks++;
+        state.numOfChecks++;       
+        }
+        else{
+        //numOfChecks--;
+        state.numOfChecks--;
+        }
+    };
+
     render() {
       const doc = this.props.doc;
-      const status = doc.status === "available" ?
-      <span><FontAwesomeIcon icon={faCircle} color="green" />{doc.status}</span> : doc.status;
+      var status = "";
+      var disableCheck = true;
+
+      if(doc.status === "available"){
+          status = <span><FontAwesomeIcon icon={faCircle} color="green" /> {doc.status}</span>
+          disableCheck = false;
+      }
+      else{
+          status = doc.status;
+          disableCheck = true;
+      }
+
       return (
         <tr>
             <th scope="row">
-                <input type="checkbox"></input>
+                <input type="checkbox" name="docCheck" disabled={disableCheck} onChange={this.selectBox}></input>
             </th>    
             <td>{doc.name}</td>
             <td>{doc.device}</td>
@@ -57,19 +92,23 @@ function Doc(props){
   }
   
   class TopBar extends React.Component {
-
     handleSubmit(){
         alert('Documents Downloaded');
       }
+
+    selectAllBoxes(){
+
+    } 
     render() {
+        
       return (
 
         <div className="row">
            <div className="col-12 col-md-5">
                 <FormGroup check>
-                <Input type="checkbox" />
+                <Input type="checkbox" id="selectAll" onSelect={this.selectAllBoxes} />
                 
-                <Label check>Selected</Label></FormGroup>
+                <span id="totalSelected">Selected {state.numOfChecks}</span></FormGroup>
             </div>
             <div className="col-12 col-md-5">    
                 <Button onClick={this.handleSubmit}><FontAwesomeIcon icon={faDownload}/> Download Selected</Button>
@@ -86,10 +125,10 @@ function Doc(props){
         <div className="container">
  
                 <div className="row-content">
-                    <div className="col-12 col-md-5"> 
+                    <div className="col-12"> 
                         <TopBar />   
                     </div>      
-                    <div className="col-12 col-md-5">                
+                    <div className="col-12">                
                         <div className="row"><DocTable docs={this.props.docs} /></div> 
                     </div> 
             </div>
