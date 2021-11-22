@@ -11,6 +11,26 @@
   min-height:400px;
 }
 
+/*---------------Page--------------*/
+
+body{
+  background: linear-gradient(to right, #e4881f, #f0461b);
+  font-family: 'Roboto', sans-serif;
+}
+
+/*-----------Table--------------------*/
+.theader {
+  background-color:rgba(231, 41, 16, 0.548)
+}
+
+/*-------tiny elements----------*/
+.dbtn {
+  background-color: #8d220896;
+  border: none;
+  margin: 5px;
+  padding: 10px;
+}
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

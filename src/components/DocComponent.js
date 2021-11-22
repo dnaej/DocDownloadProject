@@ -94,6 +94,8 @@ function Doc(props){
     } 
 
 
+    //Getting all of the rows of the DOC array
+
     docRow(doc, key, rowCount){
 
       var status = "";
@@ -148,11 +150,11 @@ function Doc(props){
                     </FormGroup>
                 </div>
                 <div className="col-12 col-md-5">    
-                    <Button onClick={this.handleSubmit}><FontAwesomeIcon icon={faDownload}/> Download Selected</Button>
+                    <Button onClick={this.handleSubmit} className="dbtn"><FontAwesomeIcon icon={faDownload}/> Download Selected</Button>
                 </div>
             </div>
         <Table hover reponsive>
-          <thead>
+          <thead className="theader">
             <tr>
               <th></th>
               <th>Name</th>
