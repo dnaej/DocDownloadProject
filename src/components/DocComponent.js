@@ -1,7 +1,8 @@
 import React from 'react';
-import { Table, Card, CardBody, CardHeader } from 'reactstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Table, Input, FormGroup, Card, CardBody, CardHeader, Button, Label } from 'reactstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faCircle} from '@fortawesome/free-solid-svg-icons';
+import {faCircle, faDownload} from '@fortawesome/free-solid-svg-icons';
 
 function Doc(props){
 
@@ -9,7 +10,7 @@ function Doc(props){
     render() {
       const doc = this.props.doc;
       const status = doc.status === "available" ?
-      <span><FontAwesomeIcon icon={faCircle} color="green" /> {doc.status}</span> : doc.status;
+      <span><FontAwesomeIcon icon={faCircle} color="green" />{doc.status}</span> : doc.status;
       return (
         <tr>
             <th scope="row">
@@ -39,7 +40,7 @@ function Doc(props){
       });
   
       return (
-        <Table bordered="true" hover="true" responsive="true">
+        <Table hover reponsive>
           <thead>
             <tr>
               <th></th>
@@ -56,14 +57,25 @@ function Doc(props){
   }
   
   class TopBar extends React.Component {
+
+    handleSubmit(){
+        alert('Documents Downloaded');
+      }
     render() {
       return (
-        <form>
-          <p>
-            <input type="checkbox" /> Selected
-          </p>
-          Download Selected
-        </form>
+
+        <div className="row">
+           <div className="col-12 col-md-5">
+                <FormGroup check>
+                <Input type="checkbox" />
+                
+                <Label check>Selected</Label></FormGroup>
+            </div>
+            <div className="col-12 col-md-5">    
+                <Button onClick={this.handleSubmit}><FontAwesomeIcon icon={faDownload}/> Download Selected</Button>
+          </div>
+        </div>
+
       );
     }
   }
@@ -72,17 +84,18 @@ function Doc(props){
     render() {
       return (
         <div className="container">
-            <div className="row row-content">
-                <div className="col-12 col-md-5">
-                    <Card>
-                        <CardHeader className="bg-primary text-black"><TopBar /></CardHeader>
-                        <CardBody>
-                            <DocTable docs={this.props.docs} />
-                        </CardBody>
-                    </Card>
-                </div>
+ 
+                <div className="row-content">
+                    <div className="col-12 col-md-5"> 
+                        <TopBar />   
+                    </div>      
+                    <div className="col-12 col-md-5">                
+                        <div className="row"><DocTable docs={this.props.docs} /></div> 
+                    </div> 
             </div>
+
         </div>
+        
       );
     }
   }

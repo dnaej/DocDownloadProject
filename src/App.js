@@ -7,7 +7,7 @@ class App extends Component{
 
   render(){
   return (
-  <div className="App">
+  <div className="App align-self-center">
     <Doc />
   </div>
 
